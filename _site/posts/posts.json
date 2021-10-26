@@ -1,0 +1,19 @@
+[
+  {
+    "path": "posts/welcome/",
+    "title": "Welcome to R for Data Science and Analytics",
+    "description": "Welcome to our new blog, R for Data Science and Analytics. We hope you enjoy reading what we have to say!",
+    "author": [
+      {
+        "name": "Ngah Xin Yan",
+        "url": "https://github.com/nxinyan"
+      }
+    ],
+    "date": "2021-08-16",
+    "categories": [],
+    "contents": "\r\n\r\n\r\n\r\n",
+    "preview": {},
+    "last_modified": "2021-10-26T15:06:55+08:00",
+    "input_file": {}
+  }
+]
