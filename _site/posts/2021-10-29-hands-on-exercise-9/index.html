@@ -117,7 +117,7 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 <!--/radix_placeholder_rmarkdown_metadata-->
   
   <script type="text/json" id="radix-resource-manifest">
-  {"type":"character","attributes":{},"value":["data/aspatial/Condo_resale_2015.csv","data/child-care-services-geojson.geojson","data/CostalOutline.dbf","data/CostalOutline.prj","data/CostalOutline.sbn","data/CostalOutline.sbx","data/CostalOutline.shp","data/CostalOutline.shx","data/geospatial/MP14_SUBZONE_WEB_PL.dbf","data/geospatial/MP14_SUBZONE_WEB_PL.prj","data/geospatial/MP14_SUBZONE_WEB_PL.sbn","data/geospatial/MP14_SUBZONE_WEB_PL.sbx","data/geospatial/MP14_SUBZONE_WEB_PL.shp","data/geospatial/MP14_SUBZONE_WEB_PL.shp.xml","data/geospatial/MP14_SUBZONE_WEB_PL.shx","data/MP14_SUBZONE_WEB_PL.dbf","data/MP14_SUBZONE_WEB_PL.prj","data/MP14_SUBZONE_WEB_PL.sbn","data/MP14_SUBZONE_WEB_PL.sbx","data/MP14_SUBZONE_WEB_PL.shp","data/MP14_SUBZONE_WEB_PL.shp.xml","data/MP14_SUBZONE_WEB_PL.shx","hands-on-exercise-9_files/anchor-4.2.2/anchor.min.js","hands-on-exercise-9_files/bowser-1.9.3/bowser.min.js","hands-on-exercise-9_files/distill-2.2.21/template.v2.js","hands-on-exercise-9_files/header-attrs-2.11/header-attrs.js","hands-on-exercise-9_files/jquery-3.6.0/jquery-3.6.0.js","hands-on-exercise-9_files/jquery-3.6.0/jquery-3.6.0.min.js","hands-on-exercise-9_files/jquery-3.6.0/jquery-3.6.0.min.map","hands-on-exercise-9_files/popper-2.6.0/popper.min.js","hands-on-exercise-9_files/tippy-6.2.7/tippy-bundle.umd.min.js","hands-on-exercise-9_files/tippy-6.2.7/tippy-light-border.css","hands-on-exercise-9_files/tippy-6.2.7/tippy.css","hands-on-exercise-9_files/tippy-6.2.7/tippy.umd.min.js","hands-on-exercise-9_files/webcomponents-2.0.0/webcomponents.js"]}
+  {"type":"character","attributes":{},"value":["data/aspatial/Condo_resale_2015.csv","data/child-care-services-geojson.geojson","data/CostalOutline.dbf","data/CostalOutline.prj","data/CostalOutline.sbn","data/CostalOutline.sbx","data/CostalOutline.shp","data/CostalOutline.shx","data/geospatial/MP14_SUBZONE_WEB_PL.dbf","data/geospatial/MP14_SUBZONE_WEB_PL.prj","data/geospatial/MP14_SUBZONE_WEB_PL.sbn","data/geospatial/MP14_SUBZONE_WEB_PL.sbx","data/geospatial/MP14_SUBZONE_WEB_PL.shp","data/geospatial/MP14_SUBZONE_WEB_PL.shp.xml","data/geospatial/MP14_SUBZONE_WEB_PL.shx","data/MP14_SUBZONE_WEB_PL.dbf","data/MP14_SUBZONE_WEB_PL.prj","data/MP14_SUBZONE_WEB_PL.sbn","data/MP14_SUBZONE_WEB_PL.sbx","data/MP14_SUBZONE_WEB_PL.shp","data/MP14_SUBZONE_WEB_PL.shp.xml","data/MP14_SUBZONE_WEB_PL.shx","hands-on-exercise-9_files/anchor-4.2.2/anchor.min.js","hands-on-exercise-9_files/bowser-1.9.3/bowser.min.js","hands-on-exercise-9_files/distill-2.2.21/template.v2.js","hands-on-exercise-9_files/figure-html5/unnamed-chunk-12-1.png","hands-on-exercise-9_files/header-attrs-2.11/header-attrs.js","hands-on-exercise-9_files/jquery-3.6.0/jquery-3.6.0.js","hands-on-exercise-9_files/jquery-3.6.0/jquery-3.6.0.min.js","hands-on-exercise-9_files/jquery-3.6.0/jquery-3.6.0.min.map","hands-on-exercise-9_files/popper-2.6.0/popper.min.js","hands-on-exercise-9_files/tippy-6.2.7/tippy-bundle.umd.min.js","hands-on-exercise-9_files/tippy-6.2.7/tippy-light-border.css","hands-on-exercise-9_files/tippy-6.2.7/tippy.css","hands-on-exercise-9_files/tippy-6.2.7/tippy.umd.min.js","hands-on-exercise-9_files/webcomponents-2.0.0/webcomponents.js"]}
   </script>
   <!--radix_placeholder_navigation_in_header-->
 <meta name="distill:offset" content="../.."/>
@@ -2156,45 +2156,240 @@ Projected CRS: SVY21</code></pre>
 <p>Assigned the MP14_SUBZONE_WEB_PL shapefile to <em>mpsz</em>. It is a simple feature object. The geometry type is multipolygon. it is also important to note that mpsz simple feature object does not have EPSG information.</p>
 <h2 id="updating-crs-information">Updating CRS information</h2>
 <div class="layout-chunk" data-layout="l-body">
-
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span class='va'>mpsz_svy21</span> <span class='op'>&lt;-</span> <span class='fu'>st_transform</span><span class='op'>(</span><span class='va'>mpsz</span>, <span class='fl'>3414</span><span class='op'>)</span>
+</code></pre>
 </div>
+</div>
+<p>Verifiying the projection of the newly transformed <em>mpsz_svy21</em> by using st_crs() of sf package</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span class='fu'>st_crs</span><span class='op'>(</span><span class='va'>mpsz_svy21</span><span class='op'>)</span>
+</code></pre>
+</div>
+<pre><code>Coordinate Reference System:
+  User input: EPSG:3414 
+  wkt:
+PROJCRS[&quot;SVY21 / Singapore TM&quot;,
+    BASEGEOGCRS[&quot;SVY21&quot;,
+        DATUM[&quot;SVY21&quot;,
+            ELLIPSOID[&quot;WGS 84&quot;,6378137,298.257223563,
+                LENGTHUNIT[&quot;metre&quot;,1]]],
+        PRIMEM[&quot;Greenwich&quot;,0,
+            ANGLEUNIT[&quot;degree&quot;,0.0174532925199433]],
+        ID[&quot;EPSG&quot;,4757]],
+    CONVERSION[&quot;Singapore Transverse Mercator&quot;,
+        METHOD[&quot;Transverse Mercator&quot;,
+            ID[&quot;EPSG&quot;,9807]],
+        PARAMETER[&quot;Latitude of natural origin&quot;,1.36666666666667,
+            ANGLEUNIT[&quot;degree&quot;,0.0174532925199433],
+            ID[&quot;EPSG&quot;,8801]],
+        PARAMETER[&quot;Longitude of natural origin&quot;,103.833333333333,
+            ANGLEUNIT[&quot;degree&quot;,0.0174532925199433],
+            ID[&quot;EPSG&quot;,8802]],
+        PARAMETER[&quot;Scale factor at natural origin&quot;,1,
+            SCALEUNIT[&quot;unity&quot;,1],
+            ID[&quot;EPSG&quot;,8805]],
+        PARAMETER[&quot;False easting&quot;,28001.642,
+            LENGTHUNIT[&quot;metre&quot;,1],
+            ID[&quot;EPSG&quot;,8806]],
+        PARAMETER[&quot;False northing&quot;,38744.572,
+            LENGTHUNIT[&quot;metre&quot;,1],
+            ID[&quot;EPSG&quot;,8807]]],
+    CS[Cartesian,2],
+        AXIS[&quot;northing (N)&quot;,north,
+            ORDER[1],
+            LENGTHUNIT[&quot;metre&quot;,1]],
+        AXIS[&quot;easting (E)&quot;,east,
+            ORDER[2],
+            LENGTHUNIT[&quot;metre&quot;,1]],
+    USAGE[
+        SCOPE[&quot;Cadastre, engineering survey, topographic mapping.&quot;],
+        AREA[&quot;Singapore - onshore and offshore.&quot;],
+        BBOX[1.13,103.59,1.47,104.07]],
+    ID[&quot;EPSG&quot;,3414]]</code></pre>
+</div>
+<p>Reveal extent of mpsz_svy21 using <em>st_bbox()</em> of sf package.</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span class='fu'>st_bbox</span><span class='op'>(</span><span class='va'>mpsz_svy21</span><span class='op'>)</span>
+</code></pre>
+</div>
+<pre><code>     xmin      ymin      xmax      ymax 
+ 2667.538 15748.721 56396.440 50256.334 </code></pre>
+</div>
+<h1 id="aspatial-data-wrangling">Aspatial Data Wrangling</h1>
+<h2 id="importing-the-aspatial-data">Importing the aspatial data</h2>
+<p>The <em>condo_resale_2015</em> is in csv file format. The codes chunk below uses <em>read_csv()</em> function of <strong>readr</strong> package to import <em>condo_resale_2015</em> into R as a tibble data frame called <em>condo_resale</em>.</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span class='va'>condo_resale</span> <span class='op'>=</span> <span class='fu'>read_csv</span><span class='op'>(</span><span class='st'>"data/aspatial/Condo_resale_2015.csv"</span><span class='op'>)</span>
+</code></pre>
+</div>
+</div>
+<p>After importing the data file into R, it is important to examine if the data file has been imported correctly.</p>
+<p>Learning more about the associated attribute information in the data frame.</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span class='fu'>glimpse</span><span class='op'>(</span><span class='va'>condo_resale</span><span class='op'>)</span>
+</code></pre>
+</div>
+<pre><code>Rows: 1,436
+Columns: 23
+$ LATITUDE             &lt;dbl&gt; 1.287145, 1.328698, 1.313727, 1.308563,~
+$ LONGITUDE            &lt;dbl&gt; 103.7802, 103.8123, 103.7971, 103.8247,~
+$ POSTCODE             &lt;dbl&gt; 118635, 288420, 267833, 258380, 467169,~
+$ SELLING_PRICE        &lt;dbl&gt; 3000000, 3880000, 3325000, 4250000, 140~
+$ AREA_SQM             &lt;dbl&gt; 309, 290, 248, 127, 145, 139, 218, 141,~
+$ AGE                  &lt;dbl&gt; 30, 32, 33, 7, 28, 22, 24, 24, 27, 31, ~
+$ PROX_CBD             &lt;dbl&gt; 7.941259, 6.609797, 6.898000, 4.038861,~
+$ PROX_CHILDCARE       &lt;dbl&gt; 0.16597932, 0.28027246, 0.42922669, 0.3~
+$ PROX_ELDERLYCARE     &lt;dbl&gt; 2.5198118, 1.9333338, 0.5021395, 1.9910~
+$ PROX_URA_GROWTH_AREA &lt;dbl&gt; 6.618741, 7.505109, 6.463887, 4.906512,~
+$ PROX_HAWKER_MARKET   &lt;dbl&gt; 1.76542207, 0.54507614, 0.37789301, 1.6~
+$ PROX_KINDERGARTEN    &lt;dbl&gt; 0.05835552, 0.61592412, 0.14120309, 0.3~
+$ PROX_MRT             &lt;dbl&gt; 0.5607188, 0.6584461, 0.3053433, 0.6910~
+$ PROX_PARK            &lt;dbl&gt; 1.1710446, 0.1992269, 0.2779886, 0.9832~
+$ PROX_PRIMARY_SCH     &lt;dbl&gt; 1.6340256, 0.9747834, 1.4715016, 1.4546~
+$ PROX_TOP_PRIMARY_SCH &lt;dbl&gt; 3.3273195, 0.9747834, 1.4715016, 2.3006~
+$ PROX_SHOPPING_MALL   &lt;dbl&gt; 2.2102717, 2.9374279, 1.2256850, 0.3525~
+$ PROX_SUPERMARKET     &lt;dbl&gt; 0.9103958, 0.5900617, 0.4135583, 0.4162~
+$ PROX_BUS_STOP        &lt;dbl&gt; 0.10336166, 0.28673408, 0.28504777, 0.2~
+$ NO_Of_UNITS          &lt;dbl&gt; 18, 20, 27, 30, 30, 31, 32, 32, 32, 32,~
+$ FAMILY_FRIENDLY      &lt;dbl&gt; 0, 0, 0, 0, 0, 1, 1, 0, 1, 1, 0, 0, 0, ~
+$ FREEHOLD             &lt;dbl&gt; 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, ~
+$ LEASEHOLD_99YR       &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, ~</code></pre>
+</div>
+<p>To see the data in XCOORD column</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span class='fu'><a href='https://rdrr.io/r/utils/head.html'>head</a></span><span class='op'>(</span><span class='va'>condo_resale</span><span class='op'>$</span><span class='va'>LONGITUDE</span><span class='op'>)</span> 
+</code></pre>
+</div>
+<pre><code>[1] 103.7802 103.8123 103.7971 103.8247 103.9505 103.9386</code></pre>
+</div>
+<p>To see the data in YCOORD column</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span class='fu'><a href='https://rdrr.io/r/utils/head.html'>head</a></span><span class='op'>(</span><span class='va'>condo_resale</span><span class='op'>$</span><span class='va'>LATITUDE</span><span class='op'>)</span> 
+</code></pre>
+</div>
+<pre><code>[1] 1.287145 1.328698 1.313727 1.308563 1.321437 1.314198</code></pre>
+</div>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span class='fu'><a href='https://rdrr.io/r/base/summary.html'>summary</a></span><span class='op'>(</span><span class='va'>condo_resale</span><span class='op'>)</span>
+</code></pre>
+</div>
+<pre><code>    LATITUDE       LONGITUDE        POSTCODE      SELLING_PRICE     
+ Min.   :1.240   Min.   :103.7   Min.   : 18965   Min.   :  540000  
+ 1st Qu.:1.309   1st Qu.:103.8   1st Qu.:259849   1st Qu.: 1100000  
+ Median :1.328   Median :103.8   Median :469298   Median : 1383222  
+ Mean   :1.334   Mean   :103.8   Mean   :440439   Mean   : 1751211  
+ 3rd Qu.:1.357   3rd Qu.:103.9   3rd Qu.:589486   3rd Qu.: 1950000  
+ Max.   :1.454   Max.   :104.0   Max.   :828833   Max.   :18000000  
+    AREA_SQM          AGE           PROX_CBD       PROX_CHILDCARE    
+ Min.   : 34.0   Min.   : 0.00   Min.   : 0.3869   Min.   :0.004927  
+ 1st Qu.:103.0   1st Qu.: 5.00   1st Qu.: 5.5574   1st Qu.:0.174481  
+ Median :121.0   Median :11.00   Median : 9.3567   Median :0.258135  
+ Mean   :136.5   Mean   :12.14   Mean   : 9.3254   Mean   :0.326313  
+ 3rd Qu.:156.0   3rd Qu.:18.00   3rd Qu.:12.6661   3rd Qu.:0.368293  
+ Max.   :619.0   Max.   :37.00   Max.   :19.1804   Max.   :3.465726  
+ PROX_ELDERLYCARE  PROX_URA_GROWTH_AREA PROX_HAWKER_MARKET
+ Min.   :0.05451   Min.   :0.2145       Min.   :0.05182   
+ 1st Qu.:0.61254   1st Qu.:3.1643       1st Qu.:0.55245   
+ Median :0.94179   Median :4.6186       Median :0.90842   
+ Mean   :1.05351   Mean   :4.5981       Mean   :1.27987   
+ 3rd Qu.:1.35122   3rd Qu.:5.7550       3rd Qu.:1.68578   
+ Max.   :3.94916   Max.   :9.1554       Max.   :5.37435   
+ PROX_KINDERGARTEN     PROX_MRT         PROX_PARK      
+ Min.   :0.004927   Min.   :0.05278   Min.   :0.02906  
+ 1st Qu.:0.276345   1st Qu.:0.34646   1st Qu.:0.26211  
+ Median :0.413385   Median :0.57430   Median :0.39926  
+ Mean   :0.458903   Mean   :0.67316   Mean   :0.49802  
+ 3rd Qu.:0.578474   3rd Qu.:0.84844   3rd Qu.:0.65592  
+ Max.   :2.229045   Max.   :3.48037   Max.   :2.16105  
+ PROX_PRIMARY_SCH  PROX_TOP_PRIMARY_SCH PROX_SHOPPING_MALL
+ Min.   :0.07711   Min.   :0.07711      Min.   :0.0000    
+ 1st Qu.:0.44024   1st Qu.:1.34451      1st Qu.:0.5258    
+ Median :0.63505   Median :1.88213      Median :0.9357    
+ Mean   :0.75471   Mean   :2.27347      Mean   :1.0455    
+ 3rd Qu.:0.95104   3rd Qu.:2.90954      3rd Qu.:1.3994    
+ Max.   :3.92899   Max.   :6.74819      Max.   :3.4774    
+ PROX_SUPERMARKET PROX_BUS_STOP       NO_Of_UNITS    
+ Min.   :0.0000   Min.   :0.001595   Min.   :  18.0  
+ 1st Qu.:0.3695   1st Qu.:0.098356   1st Qu.: 188.8  
+ Median :0.5687   Median :0.151710   Median : 360.0  
+ Mean   :0.6141   Mean   :0.193974   Mean   : 409.2  
+ 3rd Qu.:0.7862   3rd Qu.:0.220466   3rd Qu.: 590.0  
+ Max.   :2.2441   Max.   :2.476639   Max.   :1703.0  
+ FAMILY_FRIENDLY     FREEHOLD      LEASEHOLD_99YR  
+ Min.   :0.0000   Min.   :0.0000   Min.   :0.0000  
+ 1st Qu.:0.0000   1st Qu.:0.0000   1st Qu.:0.0000  
+ Median :0.0000   Median :0.0000   Median :0.0000  
+ Mean   :0.4868   Mean   :0.4227   Mean   :0.4882  
+ 3rd Qu.:1.0000   3rd Qu.:1.0000   3rd Qu.:1.0000  
+ Max.   :1.0000   Max.   :1.0000   Max.   :1.0000  </code></pre>
+</div>
+<h2 id="converting-aspatial-data-frame-into-a-sf-object">Converting aspatial data frame into a sf object</h2>
+<p>The <em>condo resale</em> data frame is aspatial. Converting <em>condo_resale</em> data frame into a simple feature data frame by using <em>st_as_sf()</em>.</p>
+<p><em>st_transform()</em> is also used to convert the coordinates from wgs84 to svy21</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span class='va'>condo_resale.sf</span> <span class='op'>&lt;-</span> <span class='fu'>st_as_sf</span><span class='op'>(</span><span class='va'>condo_resale</span>,
+                            coords <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"LONGITUDE"</span>, <span class='st'>"LATITUDE"</span><span class='op'>)</span>,
+                            crs<span class='op'>=</span><span class='fl'>4326</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
+  <span class='fu'>st_transform</span><span class='op'>(</span>crs<span class='op'>=</span><span class='fl'>3414</span><span class='op'>)</span>
+<span class='fu'><a href='https://rdrr.io/r/utils/head.html'>head</a></span><span class='op'>(</span><span class='va'>condo_resale.sf</span><span class='op'>)</span>
+</code></pre>
+</div>
+<pre><code>Simple feature collection with 6 features and 21 fields
+Geometry type: POINT
+Dimension:     XY
+Bounding box:  xmin: 22085.12 ymin: 29951.54 xmax: 41042.56 ymax: 34546.2
+Projected CRS: SVY21 / Singapore TM
+# A tibble: 6 x 22
+  POSTCODE SELLING_PRICE AREA_SQM   AGE PROX_CBD PROX_CHILDCARE
+     &lt;dbl&gt;         &lt;dbl&gt;    &lt;dbl&gt; &lt;dbl&gt;    &lt;dbl&gt;          &lt;dbl&gt;
+1   118635       3000000      309    30     7.94          0.166
+2   288420       3880000      290    32     6.61          0.280
+3   267833       3325000      248    33     6.90          0.429
+4   258380       4250000      127     7     4.04          0.395
+5   467169       1400000      145    28    11.8           0.119
+6   466472       1320000      139    22    10.3           0.125
+# ... with 16 more variables: PROX_ELDERLYCARE &lt;dbl&gt;,
+#   PROX_URA_GROWTH_AREA &lt;dbl&gt;, PROX_HAWKER_MARKET &lt;dbl&gt;,
+#   PROX_KINDERGARTEN &lt;dbl&gt;, PROX_MRT &lt;dbl&gt;, PROX_PARK &lt;dbl&gt;,
+#   PROX_PRIMARY_SCH &lt;dbl&gt;, PROX_TOP_PRIMARY_SCH &lt;dbl&gt;,
+#   PROX_SHOPPING_MALL &lt;dbl&gt;, PROX_SUPERMARKET &lt;dbl&gt;,
+#   PROX_BUS_STOP &lt;dbl&gt;, NO_Of_UNITS &lt;dbl&gt;, FAMILY_FRIENDLY &lt;dbl&gt;,
+#   FREEHOLD &lt;dbl&gt;, LEASEHOLD_99YR &lt;dbl&gt;, geometry &lt;POINT [m]&gt;</code></pre>
+</div>
+<h1 id="exploratory-data-analysis">Exploratory Data Analysis</h1>
+<h2 id="eda-using-statistical-graphics">EDA using statistical graphics</h2>
+<p>Plotting the distribution of SELLING_PRICE by using appropriate Exploratory Data Analysis (EDA)</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span class='fu'>ggplot</span><span class='op'>(</span>data<span class='op'>=</span><span class='va'>condo_resale.sf</span>, <span class='fu'>aes</span><span class='op'>(</span>x<span class='op'>=</span><span class='va'>`SELLING_PRICE`</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>+</span>
+  <span class='fu'>geom_histogram</span><span class='op'>(</span>bins<span class='op'>=</span><span class='fl'>20</span>, color<span class='op'>=</span><span class='st'>"black"</span>, fill<span class='op'>=</span><span class='st'>"light blue"</span><span class='op'>)</span>
+</code></pre>
+</div>
+<p><img src="hands-on-exercise-9_files/figure-html5/unnamed-chunk-12-1.png" width="624" /></p>
+</div>
+<p>More condominium units were transacted at a relative lower price as it is a right skewed distribution.</p>
+<p>Statistically, the skewed dsitribution can be normalised by using log transformation</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span class='va'>condo_resale.sf</span> <span class='op'>&lt;-</span> <span class='va'>condo_resale.sf</span> <span class='op'>%&gt;%</span>
+  <span class='fu'>mutate</span><span class='op'>(</span>`LOG_SELLING_PRICE` <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/Log.html'>log</a></span><span class='op'>(</span><span class='va'>SELLING_PRICE</span><span class='op'>)</span><span class='op'>)</span>
+</code></pre>
+</div>
+</div>
+<p>Plot the <strong><em>LOG_SELLING_PRICE</em></strong></p>
 <div class="layout-chunk" data-layout="l-body">
 
 </div>
-<div class="layout-chunk" data-layout="l-body">
-
-</div>
-<div class="layout-chunk" data-layout="l-body">
-
-</div>
-<div class="layout-chunk" data-layout="l-body">
-
-</div>
-<div class="layout-chunk" data-layout="l-body">
-
-</div>
-<div class="layout-chunk" data-layout="l-body">
-
-</div>
-<div class="layout-chunk" data-layout="l-body">
-
-</div>
-<div class="layout-chunk" data-layout="l-body">
-
-</div>
-<div class="layout-chunk" data-layout="l-body">
-
-</div>
-<div class="layout-chunk" data-layout="l-body">
-
-</div>
-<div class="layout-chunk" data-layout="l-body">
-
-</div>
-<div class="layout-chunk" data-layout="l-body">
-
-</div>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r distill-force-highlighting-css"><code class="sourceCode r"></code></pre></div>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r distill-force-highlighting-css"><code class="sourceCode r"></code></pre></div>
 <!--radix_placeholder_article_footer-->
 <!--/radix_placeholder_article_footer-->
 </div>
