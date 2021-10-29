@@ -1,0 +1,136 @@
+---
+title: "Hands-on Exercise 9"
+description: |
+  In this hands-on exercise, I learn how to calibrate geographicailly weighted regression models by using GWmodel package of R.
+author:
+  - name: Ngah Xin Yan
+    url: https://github.com/nxinyan/
+date: 10-29-2021
+output:
+  distill::distill_article:
+    self_contained: false
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, 
+                      eval = TRUE,
+                      message = FALSE,
+                      warning = FALSE,
+                      fig.retina = 3)
+```
+
+# Overview
+
+Geographically weighted regression (GWR) is a spatial statistical technique that takes non-stationary variables into consideration (e.g., climate; demographic factors; physical environment characteristics) and models the local relationships between these independent variables and an outcome of interest (also known as dependent variable). In this hands-on exercise, you will learn how to build hedonic pricing models by using GWR methods. The dependent variable is the resale prices of condominium in 2015. The independent variables are divided into either structural and locational.
+
+## Data Used
+
+The following datasets were used:
+
+- URA Master Plan subzone boundary in shapefile format (i.e. MP14_SUBZONE_WEB_PL)
+- condo_resale_2015 in csv format (i.e. condo_resale_2015.csv)
+
+## Installing and Loading the R packages
+
+- [**olsrr**](https://olsrr.rsquaredacademy.com/index.html): for building OLS and performing diagnostics tests
+
+- [**GWmodel**](https://cran.r-project.org/web/packages/GWmodel/index.html): to calibrate geographical weighted family of models
+
+- [**corrplot**](https://cran.r-project.org/web/packages/corrplot/vignettes/corrplot-intro.html)
+
+- **sf**: spatial data handling
+
+- **tidyverse**: attribute data handling
+
+- **tmap**: choropleth mapping
+
+```{r}
+packages = c('olsrr', 'corrplot', 'ggpubr', 'sf', 'spdep', 'GWmodel', 'tmap', 'tidyverse')
+for (p in packages){
+  if(!require(p, character.only = T)){
+    install.packages(p)
+  }
+  library(p,character.only = T)
+}
+```
+
+## Note on GWmodel
+
+[**GWmodel**](https://cran.r-project.org/web/packages/GWmodel/index.html) package provides a collection of localised spatial statistical methods:
+
+- GW summary statistics
+- GW principal components analysis
+- GW discriminant analysis
+- various forms of GW regression (provided in basic or robust (outlier resistant) forms)
+
+Commonly, outputs or parameters of the GWmodel are mapped to provide a useful exploratory tool, which can often precede (and direct) a more traditional or sophisticated statistical analysis.
+
+# Geospatial Data Wrangling
+
+## Importing geospatial data
+
+*MP14_SUBZONE_WEB_PL* is the geospatial data used. It is in ESRI shapefile format.The shapefile consists of URA Master Plan 2014’s planning subzone boundaries. Polygon features are used to represent these geographic boundaries. The GIS data is in svy21 projected coordinates systems.
+
+```{r}
+mpsz = st_read(dsn = "data/geospatial", layer = "MP14_SUBZONE_WEB_PL")
+```
+
+Assigned the MP14_SUBZONE_WEB_PL shapefile to *mpsz*. It is a simple feature object. The geometry type is multipolygon. it is also important to note that mpsz simple feature object does not have EPSG information.
+
+## Updating CRS information
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+
+

@@ -1,5 +1,22 @@
 [
   {
+    "path": "posts/2021-10-29-hands-on-exercise-9/",
+    "title": "Hands-on Exercise 9",
+    "description": "In this hands-on exercise, I learn how to calibrate geographicailly weighted regression models by using GWmodel package of R.",
+    "author": [
+      {
+        "name": "Ngah Xin Yan",
+        "url": "https://github.com/nxinyan/"
+      }
+    ],
+    "date": "2021-10-29",
+    "categories": [],
+    "contents": "\r\nOverview\r\nGeographically weighted regression (GWR) is a spatial statistical technique that takes non-stationary variables into consideration (e.g., climate; demographic factors; physical environment characteristics) and models the local relationships between these independent variables and an outcome of interest (also known as dependent variable). In this hands-on exercise, you will learn how to build hedonic pricing models by using GWR methods. The dependent variable is the resale prices of condominium in 2015. The independent variables are divided into either structural and locational.\r\nData Used\r\nThe following datasets were used:\r\nURA Master Plan subzone boundary in shapefile format (i.e. MP14_SUBZONE_WEB_PL)\r\ncondo_resale_2015 in csv format (i.e. condo_resale_2015.csv)\r\nInstalling and Loading the R packages\r\nolsrr: for building OLS and performing diagnostics tests\r\nGWmodel: to calibrate geographical weighted family of models\r\ncorrplot\r\nsf: spatial data handling\r\ntidyverse: attribute data handling\r\ntmap: choropleth mapping\r\n\r\n\r\npackages = c('olsrr', 'corrplot', 'ggpubr', 'sf', 'spdep', 'GWmodel', 'tmap', 'tidyverse')\r\nfor (p in packages){\r\n  if(!require(p, character.only = T)){\r\n    install.packages(p)\r\n  }\r\n  library(p,character.only = T)\r\n}\r\n\r\n\r\n\r\nNote on GWmodel\r\nGWmodel package provides a collection of localised spatial statistical methods:\r\nGW summary statistics\r\nGW principal components analysis\r\nGW discriminant analysis\r\nvarious forms of GW regression (provided in basic or robust (outlier resistant) forms)\r\nCommonly, outputs or parameters of the GWmodel are mapped to provide a useful exploratory tool, which can often precede (and direct) a more traditional or sophisticated statistical analysis.\r\nGeospatial Data Wrangling\r\nImporting geospatial data\r\nMP14_SUBZONE_WEB_PL is the geospatial data used. It is in ESRI shapefile format.The shapefile consists of URA Master Plan 2014’s planning subzone boundaries. Polygon features are used to represent these geographic boundaries. The GIS data is in svy21 projected coordinates systems.\r\n\r\n\r\nmpsz = st_read(dsn = \"data/geospatial\", layer = \"MP14_SUBZONE_WEB_PL\")\r\n\r\n\r\nReading layer `MP14_SUBZONE_WEB_PL' from data source \r\n  `C:\\nxinyan\\IS415\\IS415_blog-3\\_posts\\2021-10-29-hands-on-exercise-9\\data\\geospatial' \r\n  using driver `ESRI Shapefile'\r\nSimple feature collection with 323 features and 15 fields\r\nGeometry type: MULTIPOLYGON\r\nDimension:     XY\r\nBounding box:  xmin: 2667.538 ymin: 15748.72 xmax: 56396.44 ymax: 50256.33\r\nProjected CRS: SVY21\r\n\r\nAssigned the MP14_SUBZONE_WEB_PL shapefile to mpsz. It is a simple feature object. The geometry type is multipolygon. it is also important to note that mpsz simple feature object does not have EPSG information.\r\nUpdating CRS information\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n",
+    "preview": {},
+    "last_modified": "2021-10-29T12:20:23+08:00",
+    "input_file": {}
+  },
+  {
     "path": "posts/2021-10-26-hands-on-exercise-8/",
     "title": "Hands-on Exercise 8",
     "description": "In this hands-on exercise, I learn how to perform geographical segmentation by using appropriate R packages, perform cluster analysis and visualise clustering results.",
