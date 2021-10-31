@@ -116,7 +116,7 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
   <!--/radix_placeholder_rmarkdown_metadata-->
   
   <script type="text/json" id="radix-resource-manifest">
-  {"type":"character","attributes":{},"value":["data/aspatial/OD_Matrix.csv","data/geospatial/ELDERCARE.cpg","data/geospatial/ELDERCARE.dbf","data/geospatial/ELDERCARE.prj","data/geospatial/ELDERCARE.qmd","data/geospatial/ELDERCARE.shp","data/geospatial/ELDERCARE.shp.xml","data/geospatial/ELDERCARE.shx","data/geospatial/hexagons.cpg","data/geospatial/hexagons.dbf","data/geospatial/hexagons.prj","data/geospatial/hexagons.qmd","data/geospatial/hexagons.shp","data/geospatial/hexagons.shx","data/geospatial/MP14_SUBZONE_NO_SEA_PL.dbf","data/geospatial/MP14_SUBZONE_NO_SEA_PL.prj","data/geospatial/MP14_SUBZONE_NO_SEA_PL.sbn","data/geospatial/MP14_SUBZONE_NO_SEA_PL.sbx","data/geospatial/MP14_SUBZONE_NO_SEA_PL.shp","data/geospatial/MP14_SUBZONE_NO_SEA_PL.shp.xml","data/geospatial/MP14_SUBZONE_NO_SEA_PL.shx","hands-on-exercise-11_files/anchor-4.2.2/anchor.min.js","hands-on-exercise-11_files/bowser-1.9.3/bowser.min.js","hands-on-exercise-11_files/distill-2.2.21/template.v2.js","hands-on-exercise-11_files/header-attrs-2.11/header-attrs.js","hands-on-exercise-11_files/jquery-3.6.0/jquery-3.6.0.js","hands-on-exercise-11_files/jquery-3.6.0/jquery-3.6.0.min.js","hands-on-exercise-11_files/jquery-3.6.0/jquery-3.6.0.min.map","hands-on-exercise-11_files/popper-2.6.0/popper.min.js","hands-on-exercise-11_files/tippy-6.2.7/tippy-bundle.umd.min.js","hands-on-exercise-11_files/tippy-6.2.7/tippy-light-border.css","hands-on-exercise-11_files/tippy-6.2.7/tippy.css","hands-on-exercise-11_files/tippy-6.2.7/tippy.umd.min.js","hands-on-exercise-11_files/webcomponents-2.0.0/webcomponents.js","images/columnwise.JPG","images/example.JPG"]}
+  {"type":"character","attributes":{},"value":["data/aspatial/OD_Matrix.csv","data/geospatial/ELDERCARE.cpg","data/geospatial/ELDERCARE.dbf","data/geospatial/ELDERCARE.prj","data/geospatial/ELDERCARE.qmd","data/geospatial/ELDERCARE.shp","data/geospatial/ELDERCARE.shp.xml","data/geospatial/ELDERCARE.shx","data/geospatial/hexagons.cpg","data/geospatial/hexagons.dbf","data/geospatial/hexagons.prj","data/geospatial/hexagons.qmd","data/geospatial/hexagons.shp","data/geospatial/hexagons.shx","data/geospatial/MP14_SUBZONE_NO_SEA_PL.dbf","data/geospatial/MP14_SUBZONE_NO_SEA_PL.prj","data/geospatial/MP14_SUBZONE_NO_SEA_PL.sbn","data/geospatial/MP14_SUBZONE_NO_SEA_PL.sbx","data/geospatial/MP14_SUBZONE_NO_SEA_PL.shp","data/geospatial/MP14_SUBZONE_NO_SEA_PL.shp.xml","data/geospatial/MP14_SUBZONE_NO_SEA_PL.shx","hands-on-exercise-11_files/anchor-4.2.2/anchor.min.js","hands-on-exercise-11_files/bowser-1.9.3/bowser.min.js","hands-on-exercise-11_files/distill-2.2.21/template.v2.js","hands-on-exercise-11_files/figure-html5/unnamed-chunk-23-1.png","hands-on-exercise-11_files/figure-html5/unnamed-chunk-25-1.png","hands-on-exercise-11_files/header-attrs-2.11/header-attrs.js","hands-on-exercise-11_files/jquery-3.6.0/jquery-3.6.0.js","hands-on-exercise-11_files/jquery-3.6.0/jquery-3.6.0.min.js","hands-on-exercise-11_files/jquery-3.6.0/jquery-3.6.0.min.map","hands-on-exercise-11_files/popper-2.6.0/popper.min.js","hands-on-exercise-11_files/tippy-6.2.7/tippy-bundle.umd.min.js","hands-on-exercise-11_files/tippy-6.2.7/tippy-light-border.css","hands-on-exercise-11_files/tippy-6.2.7/tippy.css","hands-on-exercise-11_files/tippy-6.2.7/tippy.umd.min.js","hands-on-exercise-11_files/webcomponents-2.0.0/webcomponents.js","images/columnwise.JPG","images/example.JPG","images/hansen.JPG","images/hansenneat.JPG","images/hexhansen.JPG"]}
   </script>
   <!--radix_placeholder_navigation_in_header-->
   <!--/radix_placeholder_navigation_in_header-->
@@ -1681,6 +1681,147 @@ PROJCRS[&quot;SVY21 / Singapore TM&quot;,
 <pre class="sourceCode r"><code class="sourceCode r"><span class='va'>distmat_km</span><span class='op'>&lt;-</span><span class='fu'><a href='https://rdrr.io/r/base/matrix.html'>as.matrix</a></span><span class='op'>(</span><span class='va'>distmat</span><span class='op'>/</span><span class='fl'>1000</span><span class='op'>)</span>
 </code></pre>
 </div>
+</div>
+<h1 id="modelling-and-visualising-accessibility-using-hansen-method">Modelling and Visualising Accessibility using Hansen Method</h1>
+<h2 id="computing-hansens-accessibility">Computing Hansen’s accessibility</h2>
+<p>Compute Hansen’s accessibility by using <em>ac()</em> of <strong>SpatialAcc</strong> package.</p>
+<p>Calculating Hansen’s accessibility using <em>ac()</em> of <strong>SpatialAcc</strong> and <em>data.frame()</em> is used to save the output in a data frame called <code>acc_Handsen</code>.</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span class='va'>acc_Hansen</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/data.frame.html'>data.frame</a></span><span class='op'>(</span><span class='fu'>ac</span><span class='op'>(</span><span class='va'>hexcen</span><span class='op'>$</span><span class='va'>demand</span>,
+                            <span class='va'>eldercare</span><span class='op'>$</span><span class='va'>capacity</span>,
+                            <span class='va'>distmat_km</span>, 
+                            d0 <span class='op'>=</span> <span class='fl'>50</span>,
+                            power <span class='op'>=</span> <span class='fl'>2</span>, 
+                            family <span class='op'>=</span> <span class='st'>"Hansen"</span><span class='op'>)</span><span class='op'>)</span>
+</code></pre>
+</div>
+</div>
+<div class="layout-chunk" data-layout="l-body">
+<p><img src="images/hansen.JPG" width="80%" style="display: block; margin: auto;" /></p>
+</div>
+<p>The default field name is very messy, we will rename it to <code>accHansen</code>.</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span class='fu'><a href='https://rdrr.io/r/base/colnames.html'>colnames</a></span><span class='op'>(</span><span class='va'>acc_Hansen</span><span class='op'>)</span> <span class='op'>&lt;-</span> <span class='st'>"accHansen"</span>
+</code></pre>
+</div>
+</div>
+<p>Notice that the field name is much more tidier now.</p>
+<div class="layout-chunk" data-layout="l-body">
+<p><img src="images/hansenneat.JPG" height="60%" style="display: block; margin: auto;" /></p>
+</div>
+<p>Converting the data table into tibble format.</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span class='va'>acc_Hansen</span> <span class='op'>&lt;-</span> <span class='fu'>tbl_df</span><span class='op'>(</span><span class='va'>acc_Hansen</span><span class='op'>)</span>
+</code></pre>
+</div>
+</div>
+<p>Lastly, <em>bind_cols()</em> of <strong>dplyr</strong> will be used to join the acc_Hansen tibble data frame with the hexagons simple feature data frame. The output is called <code>hexagon_Hansen</code>.</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span class='va'>hexagon_Hansen</span> <span class='op'>&lt;-</span> <span class='fu'>bind_cols</span><span class='op'>(</span><span class='va'>hexagons</span>, <span class='va'>acc_Hansen</span><span class='op'>)</span>
+</code></pre>
+</div>
+</div>
+<p>Notice that hexagon_Hansen is a simple feature data frame and not a typical tibble data frame.</p>
+<div class="layout-chunk" data-layout="l-body">
+<p><img src="images/hexhansen.JPG" width="80%" style="display: block; margin: auto;" /></p>
+</div>
+<p>Can put all the steps above into a single code chunk.</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span class='va'>acc_Hansen</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/data.frame.html'>data.frame</a></span><span class='op'>(</span><span class='fu'>ac</span><span class='op'>(</span><span class='va'>hexagons</span><span class='op'>$</span><span class='va'>demand</span>,
+                            <span class='va'>eldercare</span><span class='op'>$</span><span class='va'>capacity</span>,
+                            <span class='va'>distmat_km</span>, 
+                            d0 <span class='op'>=</span> <span class='fl'>50</span>,
+                            power <span class='op'>=</span> <span class='fl'>2</span>, 
+                            family <span class='op'>=</span> <span class='st'>"Hansen"</span><span class='op'>)</span><span class='op'>)</span>
+
+<span class='fu'><a href='https://rdrr.io/r/base/colnames.html'>colnames</a></span><span class='op'>(</span><span class='va'>acc_Hansen</span><span class='op'>)</span> <span class='op'>&lt;-</span> <span class='st'>"accHansen"</span>
+<span class='va'>acc_Hansen</span> <span class='op'>&lt;-</span> <span class='fu'>tbl_df</span><span class='op'>(</span><span class='va'>acc_Hansen</span><span class='op'>)</span>
+<span class='va'>hexagon_Hansen</span> <span class='op'>&lt;-</span> <span class='fu'>bind_cols</span><span class='op'>(</span><span class='va'>hexagons</span>, <span class='va'>acc_Hansen</span><span class='op'>)</span>
+</code></pre>
+</div>
+</div>
+<h2 id="visualising-hansens-accessibility">Visualising Hansen’s accessibility</h2>
+<h3 id="extracting-map-extend">Extracting map extend</h3>
+<p>Extracting the extend of <code>hexagons</code> simple feature data frameby by using <em>st_bbox()</em> of <strong>sf</strong> package.</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span class='va'>mapex</span> <span class='op'>&lt;-</span> <span class='fu'>st_bbox</span><span class='op'>(</span><span class='va'>hexagons</span><span class='op'>)</span> <span class='co'>#view extent</span>
+</code></pre>
+</div>
+</div>
+<p>The code chunk below uses a collection of mapping fucntions of tmap package to create a high cartographic quality accessibility to eldercare centre in Singapore.</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span class='fu'>tmap_mode</span><span class='op'>(</span><span class='st'>"plot"</span><span class='op'>)</span>
+<span class='fu'>tm_shape</span><span class='op'>(</span><span class='va'>hexagon_Hansen</span>,
+         bbox <span class='op'>=</span> <span class='va'>mapex</span><span class='op'>)</span> <span class='op'>+</span> 
+  <span class='fu'>tm_fill</span><span class='op'>(</span>col <span class='op'>=</span> <span class='st'>"accHansen"</span>,
+          n <span class='op'>=</span> <span class='fl'>10</span>,
+          style <span class='op'>=</span> <span class='st'>"quantile"</span>,
+          border.col <span class='op'>=</span> <span class='st'>"black"</span>,
+          border.lwd <span class='op'>=</span> <span class='fl'>1</span><span class='op'>)</span> <span class='op'>+</span>
+<span class='fu'>tm_shape</span><span class='op'>(</span><span class='va'>eldercare</span><span class='op'>)</span> <span class='op'>+</span>
+  <span class='fu'>tm_symbols</span><span class='op'>(</span>size <span class='op'>=</span> <span class='fl'>0.1</span><span class='op'>)</span> <span class='op'>+</span>
+  <span class='fu'>tm_layout</span><span class='op'>(</span>main.title <span class='op'>=</span> <span class='st'>"Accessibility to eldercare: Hansen method"</span>,
+            main.title.position <span class='op'>=</span> <span class='st'>"center"</span>,
+            main.title.size <span class='op'>=</span> <span class='fl'>2</span>,
+            legend.outside <span class='op'>=</span> <span class='cn'>FALSE</span>,
+            legend.height <span class='op'>=</span> <span class='fl'>0.45</span>, 
+            legend.width <span class='op'>=</span> <span class='fl'>3.0</span>,
+            legend.format <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>digits <span class='op'>=</span> <span class='fl'>6</span><span class='op'>)</span>,
+            legend.position <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"right"</span>, <span class='st'>"top"</span><span class='op'>)</span>,
+            frame <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span> <span class='op'>+</span>
+  <span class='fu'>tm_compass</span><span class='op'>(</span>type<span class='op'>=</span><span class='st'>"8star"</span>, size <span class='op'>=</span> <span class='fl'>2</span><span class='op'>)</span> <span class='op'>+</span>
+  <span class='fu'>tm_scale_bar</span><span class='op'>(</span>width <span class='op'>=</span> <span class='fl'>0.15</span><span class='op'>)</span> <span class='op'>+</span>
+  <span class='fu'>tm_grid</span><span class='op'>(</span>lwd <span class='op'>=</span> <span class='fl'>0.1</span>, alpha <span class='op'>=</span> <span class='fl'>0.5</span><span class='op'>)</span>
+</code></pre>
+</div>
+<p><img src="hands-on-exercise-11_files/figure-html5/unnamed-chunk-23-1.png" width="624" /></p>
+</div>
+<h2 id="statistical-graphic-visualisation">Statistical graphic visualisation</h2>
+<p>Comapring the distribution of Hansen’s accessibility values by URA Planning Region.</p>
+<p>First, add the planning region field into <em>hexagon_Hansen</em> simple feature data frame.</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span class='va'>hexagon_Hansen</span> <span class='op'>&lt;-</span> <span class='fu'>st_join</span><span class='op'>(</span><span class='va'>hexagon_Hansen</span>, <span class='va'>mpsz</span>, 
+                          join <span class='op'>=</span> <span class='va'>st_intersects</span><span class='op'>)</span>
+</code></pre>
+</div>
+</div>
+<p>Next, <em>ggplot()</em> will be used to plot the distribution by using boxplot graphical method.</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span class='fu'>ggplot</span><span class='op'>(</span>data<span class='op'>=</span><span class='va'>hexagon_Hansen</span>, 
+       <span class='fu'>aes</span><span class='op'>(</span>y <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/Log.html'>log</a></span><span class='op'>(</span><span class='va'>accHansen</span><span class='op'>)</span>, 
+           x<span class='op'>=</span> <span class='va'>REGION_N</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>+</span>
+  <span class='fu'>geom_boxplot</span><span class='op'>(</span><span class='op'>)</span> <span class='op'>+</span>
+  <span class='fu'>geom_point</span><span class='op'>(</span>stat<span class='op'>=</span><span class='st'>"summary"</span>, 
+             fun.y<span class='op'>=</span><span class='st'>"mean"</span>, 
+             colour <span class='op'>=</span><span class='st'>"red"</span>, 
+             size<span class='op'>=</span><span class='fl'>2</span><span class='op'>)</span>
+</code></pre>
+</div>
+<p><img src="hands-on-exercise-11_files/figure-html5/unnamed-chunk-25-1.png" width="624" /></p>
+</div>
+<div class="layout-chunk" data-layout="l-body">
+
+</div>
+<div class="layout-chunk" data-layout="l-body">
+
+</div>
+<div class="layout-chunk" data-layout="l-body">
+
+</div>
+<div class="layout-chunk" data-layout="l-body">
+
+</div>
+<div class="layout-chunk" data-layout="l-body">
+
 </div>
 <div class="layout-chunk" data-layout="l-body">
 

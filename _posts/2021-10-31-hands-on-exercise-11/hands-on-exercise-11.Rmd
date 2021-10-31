@@ -167,6 +167,154 @@ Currently, the distance is measured in metre because SVY21 projected coordinate 
 distmat_km<-as.matrix(distmat/1000)
 ```
 
+# Modelling and Visualising Accessibility using Hansen Method
+
+## Computing Hansen’s accessibility
+
+Compute Hansen’s accessibility by using *ac()* of **SpatialAcc** package.
+
+Calculating Hansen’s accessibility using *ac()* of **SpatialAcc** and *data.frame()* is used to save the output in a data frame called `acc_Handsen`.
+
+```{r}
+acc_Hansen <- data.frame(ac(hexcen$demand,
+                            eldercare$capacity,
+                            distmat_km, 
+                            d0 = 50,
+                            power = 2, 
+                            family = "Hansen"))
+```
+
+```{r echo=FALSE, fig.align='center',out.width='80%'}
+knitr::include_graphics("images/hansen.jpg")
+```
+
+The default field name is very messy, we will rename it to `accHansen`.
+
+```{r}
+colnames(acc_Hansen) <- "accHansen"
+```
+
+Notice that the field name is much more tidier now.
+
+```{r echo=FALSE, fig.align='center',out.height='60%'}
+knitr::include_graphics("images/hansenneat.jpg")
+```
+
+Converting the data table into tibble format.
+
+```{r}
+acc_Hansen <- tbl_df(acc_Hansen)
+```
+
+Lastly, *bind_cols()* of **dplyr** will be used to join the acc_Hansen tibble data frame with the hexagons simple feature data frame. The output is called `hexagon_Hansen`.
+
+```{r}
+hexagon_Hansen <- bind_cols(hexagons, acc_Hansen)
+```
+
+Notice that hexagon_Hansen is a simple feature data frame and not a typical tibble data frame.
+
+```{r echo=FALSE, fig.align='center',out.width='80%'}
+knitr::include_graphics("images/hexhansen.jpg")
+```
+
+Can put all the steps above into a single code chunk.
+
+```{r}
+acc_Hansen <- data.frame(ac(hexagons$demand,
+                            eldercare$capacity,
+                            distmat_km, 
+                            d0 = 50,
+                            power = 2, 
+                            family = "Hansen"))
+
+colnames(acc_Hansen) <- "accHansen"
+acc_Hansen <- tbl_df(acc_Hansen)
+hexagon_Hansen <- bind_cols(hexagons, acc_Hansen)
+```
+
+## Visualising Hansen’s accessibility
+
+### Extracting map extend
+
+Extracting the extend of `hexagons` simple feature data frameby by using *st_bbox()* of **sf** package.
+
+```{r}
+mapex <- st_bbox(hexagons) #view extent
+```
+
+The code chunk below uses a collection of mapping fucntions of tmap package to create a high cartographic quality accessibility to eldercare centre in Singapore.
+
+```{r}
+tmap_mode("plot")
+tm_shape(hexagon_Hansen,
+         bbox = mapex) + 
+  tm_fill(col = "accHansen",
+          n = 10,
+          style = "quantile",
+          border.col = "black",
+          border.lwd = 1) +
+tm_shape(eldercare) +
+  tm_symbols(size = 0.1) +
+  tm_layout(main.title = "Accessibility to eldercare: Hansen method",
+            main.title.position = "center",
+            main.title.size = 2,
+            legend.outside = FALSE,
+            legend.height = 0.45, 
+            legend.width = 3.0,
+            legend.format = list(digits = 6),
+            legend.position = c("right", "top"),
+            frame = TRUE) +
+  tm_compass(type="8star", size = 2) +
+  tm_scale_bar(width = 0.15) +
+  tm_grid(lwd = 0.1, alpha = 0.5)
+```
+
+## Statistical graphic visualisation
+
+Comapring the distribution of Hansen’s accessibility values by URA Planning Region.
+
+First, add the planning region field into *hexagon_Hansen* simple feature data frame.
+
+```{r}
+hexagon_Hansen <- st_join(hexagon_Hansen, mpsz, 
+                          join = st_intersects)
+```
+
+Next, *ggplot()* will be used to plot the distribution by using boxplot graphical method.
+
+```{r}
+ggplot(data=hexagon_Hansen, 
+       aes(y = log(accHansen), 
+           x= REGION_N)) +
+  geom_boxplot() +
+  geom_point(stat="summary", 
+             fun.y="mean", 
+             colour ="red", 
+             size=2)
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+
 ```{r}
 
 ```
