@@ -1,0 +1,184 @@
+---
+title: "Hands-on Exercise 11"
+description: |
+  In this hands-on exercise, I learn how to model geographical accessibility by using R’s geospatial analysis packages.
+author:
+  - name: Ngah Xin Yan
+    url: https://github.com/nxinyan/
+date: 10-31-2021
+output:
+  distill::distill_article:
+    self_contained: false
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, 
+                      eval = TRUE,
+                      message = FALSE,
+                      warning = FALSE,
+                      fig.retina = 3)
+```
+
+## Data Used
+
+The following datasets were used:
+
+- `MP14_SUBZONE_NO_SEA_PL`: URA Master Plan subzone boundary in shapefile format.
+- `hexagons`: A 250m radius hexagons GIS data. This data set was created by using *st_make_grid()* of sf package. It is in ESRI shapefile format.
+- `ELDERCARE`: Location of eldercare service. It is in ESRI shapefile format.
+- `OD_Matrix`: a distance matrix in csv format. There are six fields in the data file. They are:
+  - `origin_id`: the unique id values of the origin (i.e. fid of hexagon data set.)
+  - `destination_id`: the unique id values of the destination (i.e. fid of `ELDERCARE` data set.
+  - `entry_cost`: the perpendicular distance between the origins and the nearest road
+  - `network_cost`: the actual network distance from the origin and destination
+  - `exit_cost`: the perpendicular distance between the destination and the nearest road
+  - `total_cost`: the summation of `entry_cost, network_cost and exit_cost`.
+  
+All the values of the cost related fields are in **metres**.
+
+# Getting Started
+
+## Installing and Loading the R packages
+
+The following R packages were used:
+
+- **sf**: spatial data handling
+
+- **tidyverse**: attribute data handling
+
+- **tmap**: thematic mapping
+
+- **ggplot2**: Staistical graphic
+
+- **ggstatsplot**: Statistical analysis
+
+- **spatialAcc**: Modelling geographical accessibility
+
+```{r}
+packages = c('tmap', 'SpatialAcc',
+             'sf', 'ggstatsplot', 'reshape2',
+             'tidyverse')
+
+for(p in packages){
+  if(!require(p, character.only = T)){
+    install.packages(p)
+  }
+  library(p, character.only = T)
+}
+```
+
+# Geospatial Data Wrangling
+
+## Importing geospatial data
+
+MP14_SUBZONE_NO_SEA_PL, hexagons and ELDERCARE will be imported from the data/geospatial sub-folder.
+
+Importing thee three data sets shapefile using *st_read()* of **sf** packages.
+
+```{r}
+mpsz <- st_read(dsn = "data/geospatial", layer = "MP14_SUBZONE_NO_SEA_PL")
+```
+
+Assigned the MP14_SUBZONE_WEB_PL shapefile to *mpsz*. It is a simple feature object. The geometry type is multipolygon. it is also important to note that mpsz simple feature object does not have EPSG information.
+
+```{r}
+hexagons <- st_read(dsn = "data/geospatial", layer = "hexagons")
+```
+
+```{r}
+eldercare <- st_read(dsn = "data/geospatial", layer = "ELDERCARE") 
+```
+
+## Updating CRS information
+
+```{r}
+mpsz <- st_transform(mpsz, 3414)
+eldercare <- st_transform(eldercare, 3414)
+hexagons <- st_transform(hexagons, 3414)
+```
+
+Verifying the projection of the newly transformed *mpsz* by using *st_crs()* of **sf** package
+
+```{r}
+st_crs(mpsz)
+```
+
+*mpsz* has been successfully transformed.
+
+## Cleaning and updating attribute fields of the geospatial data
+
+There are many redundant fields in the data tables of  `eldercare` and `hexagons`. The code chunks below will be used to exclude those redundant fields. At the same time, a new field called `demand` and `capacity` will be added into the data table of `hexagons` and `eldercare` sf data frame respectively. Both fields are derive using *mutate()* of **dplyr** package.
+
+```{r}
+eldercare <- eldercare %>%
+  select(fid, ADDRESSPOS) %>%
+  mutate(capacity = 100)
+```
+
+```{r}
+hexagons <- hexagons %>%
+  select(fid) %>%
+  mutate(demand = 100)
+```
+
+**Note**: For the purpose of this hands-on exercise, a constant value of 100 is used. In practice, actual demand of the hexagon and capacity of the eldercare centre should be used.
+
+# Aspatial Data Handling and Wrangling
+
+## Importing Distance Matrix
+
+Importing `OD_Matrix.csv` using *read_cvs()* of **readr** package. The imported object is a tibble data.frame called `ODMatrix`.
+
+```{r}
+ODMatrix <- read_csv("data/aspatial/OD_Matrix.csv", skip = 0)
+```
+
+## Tidying distance matrix
+
+The imported ODMatrix organised the distance matrix columnwise.
+
+```{r echo=FALSE, fig.align='center',out.width='80%'}
+knitr::include_graphics("images/columnwise.jpg")
+```
+
+On the other hands, most of the modelling packages in R is expects a matrix that looks similar to the figure below.
+
+```{r echo=FALSE, fig.align='center',out.width='80%'}
+knitr::include_graphics("images/example.jpg")
+```
+
+The rows represent **origins** (i.e. also know as **from** field) and the columns represent **destination** (i.e. also known as **to** field.)
+
+Transforming the O-D matrix from a thin format into a fat format using *spread()* of **tidyr** package.
+
+```{r}
+distmat <- ODMatrix %>%
+  select(origin_id, destination_id, total_cost) %>%
+  spread(destination_id, total_cost)%>%
+  select(c(-c('origin_id')))
+```
+
+**Note**: Since tidyr version 1.0 a new function called pivot_wider() is introduce. You should use *pivot_wider()* instead of *spread()*
+
+Currently, the distance is measured in metre because SVY21 projected coordinate system is used. Converting the unit measurement from meter to kilometer.
+
+```{r}
+distmat_km<-as.matrix(distmat/1000)
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```

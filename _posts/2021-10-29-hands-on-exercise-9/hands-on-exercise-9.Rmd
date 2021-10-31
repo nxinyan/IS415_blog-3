@@ -37,7 +37,7 @@ The following datasets were used:
 
 - [**GWmodel**](https://cran.r-project.org/web/packages/GWmodel/index.html): to calibrate geographical weighted family of models
 
-- [**corrplot**](https://cran.r-project.org/web/packages/corrplot/vignettes/corrplot-intro.html)
+- [**corrplot**](https://cran.r-project.org/web/packages/corrplot/vignettes/corrplot-intro.html): for multivariate data visualisation and analysis
 
 - **sf**: spatial data handling
 
@@ -84,7 +84,7 @@ Assigned the MP14_SUBZONE_WEB_PL shapefile to *mpsz*. It is a simple feature obj
 mpsz_svy21 <- st_transform(mpsz, 3414)
 ```
 
-Verifiying the projection of the newly transformed *mpsz_svy21* by using st_crs() of sf package
+Verifying the projection of the newly transformed *mpsz_svy21* by using st_crs() of sf package
 
 ```{r}
 st_crs(mpsz_svy21)
@@ -157,7 +157,7 @@ ggplot(data=condo_resale.sf, aes(x=`SELLING_PRICE`)) +
 
 More condominium units were transacted at a relative lower price as it is a right skewed distribution.
 
-Statistically, the skewed dsitribution can be normalised by using log transformation
+Statistically, the skewed dsitribution can be normalised by using log transformation. It is performed using mutate() of dplyr package.
 
 ```{r}
 condo_resale.sf <- condo_resale.sf %>%
@@ -167,8 +167,166 @@ condo_resale.sf <- condo_resale.sf %>%
 Plot the ***LOG_SELLING_PRICE***
 
 ```{r}
+ggplot(data=condo_resale.sf, aes(x=`LOG_SELLING_PRICE`)) +
+  geom_histogram(bins=20, color="black", fill="light blue")
+```
+
+The distribution of the histogram is less skewed after the transformation.
+
+## Multiple Histogram Plots distribution of variables
+
+Drawing small multiple histograms by using ggarrange() of ggpubr package.
+
+```{r}
+AREA_SQM <- ggplot(data=condo_resale.sf, aes(x= `AREA_SQM`)) +
+  geom_histogram(bins=20, color="black", fill="light blue")
+
+AGE <- ggplot(data=condo_resale.sf, aes(x= `AGE`)) +
+  geom_histogram(bins=20, color="black", fill="light blue")
+
+PROX_CBD <- ggplot(data=condo_resale.sf, aes(x= `PROX_CBD`)) +
+  geom_histogram(bins=20, color="black", fill="light blue")
+
+PROX_CHILDCARE <- ggplot(data=condo_resale.sf, aes(x= `PROX_CHILDCARE`)) +
+  geom_histogram(bins=20, color="black", fill="light blue")
+
+PROX_ELDERLYCARE <- ggplot(data=condo_resale.sf, aes(x= `PROX_ELDERLYCARE`)) +
+  geom_histogram(bins=20, color="black", fill="light blue")
+
+PROX_URA_GROWTH_AREA <- ggplot(data=condo_resale.sf, aes(x= `PROX_URA_GROWTH_AREA`)) +
+  geom_histogram(bins=20, color="black", fill="light blue")
+
+PROX_HAWKER_MARKET <- ggplot(data=condo_resale.sf, aes(x= `PROX_HAWKER_MARKET`)) +
+  geom_histogram(bins=20, color="black", fill="light blue")
+
+PROX_KINDERGARTEN <- ggplot(data=condo_resale.sf, aes(x= `PROX_KINDERGARTEN`)) +
+  geom_histogram(bins=20, color="black", fill="light blue")
+
+PROX_MRT <- ggplot(data=condo_resale.sf, aes(x= `PROX_MRT`)) +
+  geom_histogram(bins=20, color="black", fill="light blue")
+
+PROX_PARK <- ggplot(data=condo_resale.sf, aes(x= `PROX_PARK`)) +
+  geom_histogram(bins=20, color="black", fill="light blue")
+
+PROX_PRIMARY_SCH <- ggplot(data=condo_resale.sf, aes(x= `PROX_PRIMARY_SCH`)) +
+  geom_histogram(bins=20, color="black", fill="light blue")
+
+PROX_TOP_PRIMARY_SCH <- ggplot(data=condo_resale.sf, aes(x= `PROX_TOP_PRIMARY_SCH`)) +
+  geom_histogram(bins=20, color="black", fill="light blue")
+
+ggarrange(AREA_SQM, AGE, PROX_CBD, PROX_CHILDCARE, PROX_ELDERLYCARE, PROX_URA_GROWTH_AREA, PROX_HAWKER_MARKET, PROX_KINDERGARTEN, PROX_MRT, PROX_PARK, PROX_PRIMARY_SCH, PROX_TOP_PRIMARY_SCH,  ncol = 3, nrow = 4)
+```
+
+## Drawing Statistical Point Map
+
+Revealing the geospatial distribution condominium resale prices in Singapore.
+
+Using interactive mode
+
+```{r}
+tmap_mode("view")
+```
+
+Create an interactive point symbol map
+
+```{r}
+tmap_options(check.and.fix = TRUE)
+tm_shape(mpsz_svy21)+
+  tm_polygons() +
+tm_shape(condo_resale.sf) +  
+  tm_dots(col = "SELLING_PRICE",
+          alpha = 0.6,
+          style="quantile") +
+  tm_view(set.zoom.limits = c(11,14))
+```
+
+*set.zoom.limits* argument of *tm_view()* sets the minimum and maximum zoom level to 11 and 14 respectively.
+
+Turn R display into plot mode
+
+```{r}
+tmap_mode("plot")
+```
+
+# Hedonic Pricing Modelling in R
+
+Learning how to building hedonic pricing models for condominium resale units using *lm()* of R base.
+
+## Simple Linear Regression Method
+
+Building a simple linear regression model by using *SELLING_PRICE* as the dependent variable and *AREA_SQM* as the independent variable.
+
+```{r}
+condo.slr <- lm(formula=SELLING_PRICE ~ AREA_SQM, data = condo_resale.sf)
+```
+
+*lm()* returns an object of class “lm” or for multiple responses of class c(“mlm”, “lm”).
+
+The functions *summary()* and *anova()* can be used to obtain and print a summary and analysis of variance table of the results. The generic accessor functions coefficients, effects, fitted.values and residuals extract various useful features of the value returned by **lm**.
+
+```{r}
+summary(condo.slr)
+```
+
+The output report reveals that the SELLING_PRICE can be explained by using the formula:
+
+```{r}
 
 ```
 
+```{r}
 
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
 
