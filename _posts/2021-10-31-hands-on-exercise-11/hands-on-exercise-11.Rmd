@@ -245,7 +245,7 @@ mapex <- st_bbox(hexagons) #view extent
 
 The code chunk below uses a collection of mapping fucntions of tmap package to create a high cartographic quality accessibility to eldercare centre in Singapore.
 
-```{r}
+```{r fig.width=12, fig.height=8}
 tmap_mode("plot")
 tm_shape(hexagon_Hansen,
          bbox = mapex) + 
@@ -319,7 +319,7 @@ hexagon_KD2SFCA <- bind_cols(hexagons, acc_KD2SFCA)
 
 The code chunk below uses a collection of mapping fucntions of tmap package to create a high cartographic quality accessibility to eldercare centre in Singapore. Notice that `mapex` is reused for *bbox* argument.
 
-```{r}
+```{r fig.width=12, fig.height=8}
 tmap_mode("plot")
 tm_shape(hexagon_KD2SFCA,
          bbox = mapex) + 
@@ -393,7 +393,7 @@ hexagon_SAM <- bind_cols(hexagons, acc_SAM)
 
 The code chunk below uses a collection of mapping fucntions of tmap package to create a high cartographic quality accessibility to eldercare centre in Singapore. Notice that `mapex` is reused for *bbox* argument.
 
-```{r}
+```{r fig.width=12, fig.height=8}
 tmap_mode("plot")
 tm_shape(hexagon_SAM,
          bbox = mapex) + 
