@@ -5,7 +5,7 @@ description: |
 author:
   - name: Ngah Xin Yan
     url: https://github.com/nxinyan/
-date: 11-02-2021
+date: 10-30-2021
 output:
   distill::distill_article:
     self_contained: false
@@ -118,6 +118,283 @@ st_is_valid(AusSF)
 ### Displaying the boundary layer
 
 Plotting the data to check if boundary layer is correct. Plotting usSF simple feature data.frame using *qtm()* of **tmap** package
+
+```{r}
+tmap_mode("plot")
+qtm(AusSF)
+```
+
+### Displaying data table
+
+Viewing the data frame
+
+```{r}
+head(AusSF, 10)
+```
+
+Fixing by reordering the order of code
+
+```{r}
+AusSF1 <- AusSF[order(AusSF$GCCSA_CODE),]
+```
+
+Looking at the data frame again
+
+```{r}
+head(AusSF1, 10)
+```
+
+### Converting into sp object
+
+Converting the new ordered SF1 dataframe into an ‘sp’ object
+
+```{r}
+Aus <- as(AusSF1, "Spatial")
+```
+
+## Calculating a distance matrix
+
+In our spatial interaction model, space is one of the key predictor variables. Using simple Euclidean distance measure between the centroids of the Greater Capital City Statistical Areas as our measure of space.
+
+### Re-projecting to projected coordinate system
+
+The original data is in geographical coordinate system and the unit of measurement is in decimal degree, which is not appropriate for distance measurement. Before computing the distance matrix, Aus will be reprojected into projected coordinate system by using *spTransform()* of **sp** package.
+
+```{r}
+AusProj <- spTransform(Aus,"+init=epsg:3112")
+summary(AusProj)
+```
+
+### Computing distance matrix
+
+*st_distance()* of **sf** package can be used to compute the distance matrix. However, the process takes too long to complete, thus *spDist()* of **sp** package is used,
+
+```{r}
+dist <- spDists(AusProj)
+dist 
+```
+
+### Converting distance matrix into distance pair list
+
+In order to integrate the distance matrix with the migration flow data.frame, the newly derived distance matrix needs to be transformed into a three columns distance values list.
+
+```{r}
+distPair <- melt(dist)
+head(distPair, 10)
+```
+
+### Converting unit of measurement from metres into km
+
+The unit of measurement of Australia projected coordinate system is in metre. As a result, the values in the distance matrix are in metres too. Converting the distance values into kilometres.
+
+```{r}
+distPair$value <- distPair$value / 1000
+head(distPair, 10)
+```
+
+# Importing Interaction Data
+
+```{r}
+mdata <- read_csv("https://www.dropbox.com/s/wi3zxlq5pff1yda/AusMig2011.csv?raw=1",col_names = TRUE)
+glimpse(mdata)
+```
+
+## Combining the imported migration data
+
+To finish, the distance data needs to be added in and create a new column of total flows which excludes flows that occur within areas (we could keep the within-area (intra-area) flows in
+
+First create a new total column which excludes intra-zone flow totals. Set it to a very very small number to avoid making the intra-zonal distance become 0
+
+```{r}
+mdata$FlowNoIntra <- ifelse(mdata$Orig_code == mdata$Dest_code,0,mdata$Flow)
+mdata$offset <- ifelse(mdata$Orig_code == mdata$Dest_code,0.0000000001,1)
+```
+
+Next, the spatial data was ordered earlier so that the zones are in their code order. Easily join these data together with the flow data as they are in the correct order.
+
+```{r}
+mdata$dist <- distPair$value 
+```
+
+```{r}
+mdata$dist <- ifelse(mdata$dist == 0,5,mdata$dist)
+```
+
+Look at the new data
+
+```{r}
+glimpse(mdata)
+```
+
+# Visualising with desire line
+
+## Removing intra-zonal flows
+
+Removing intra-zonal flows
+
+```{r}
+mdatasub <- mdata[mdata$Orig_code!=mdata$Dest_code,]
+```
+
+*od2line()* function of the **stplanr** package to remove all but the origin, destination and flow columns.
+
+```{r}
+mdatasub_skinny <- mdatasub[,c(2,4,5)]
+travel_network <- od2line(flow = mdatasub_skinny, 
+                          zones = Aus)
+```
+
+Converting the flows to WGS84 projection
+
+```{r}
+travel_networkwgs <- spTransform(travel_network,"+init=epsg:4326" )
+```
+
+```{r}
+AusWGS <- spTransform(Aus,"+init=epsg:4326" )
+```
+
+Set the line widths to some sensible value according to the flow
+
+```{r}
+w <- mdatasub_skinny$Flow / max(mdatasub_skinny$Flow) * 10
+```
+
+Plotting the desire line map 
+
+```{r}
+plot(travel_networkwgs, lwd = w)
+plot(AusWGS, add=T)
+```
+
+# Building Spatial Interaction Models
+
+## Unconstrained Spatial Interaction Model
+
+Calibrating an unconstrained spatial interaction model by using *glm()*. The explanatory variables are origin population (i.e. vi1_origpop), destination median income (i.e. wj3_destmedinc) and distance between origin and destination in km (i.e. dist).
+
+```{r}
+uncosim <- glm(Flow ~ log(vi1_origpop)+log(wj3_destmedinc)+log(dist), na.action = na.exclude, family = poisson(link = "log"), data = mdatasub)
+summary(uncosim)
+```
+
+### Fitting the model
+
+*fitted()* of R is used to compute the fitted values.
+
+```{r}
+mdatasub$fitted <- fitted(uncosim)
+```
+
+```{r}
+k <- uncosim$coefficients[1]
+mu <- uncosim$coefficients[2]
+alpha <- uncosim$coefficients[3]
+beta <- -uncosim$coefficients[4]
+```
+
+```{r}
+mdatasub$unconstrainedEst2 <- exp(k+(mu*log(mdatasub$vi1_origpop))+(alpha*log(mdatasub$wj3_destmedinc))-(beta*log(mdatasub$dist)))
+```
+
+is the same as
+
+```{r}
+mdatasub$unconstrainedEst2 <- (exp(k)*exp(mu*log(mdatasub$vi1_origpop))*exp(alpha*log(mdatasub$wj3_destmedinc))*exp(-beta*log(mdatasub$dist)))
+```
+
+### Saving the fitted values
+
+Run the model and save all of the new flow estimates in a new column in the dataframe
+
+```{r}
+mdatasub$unconstrainedEst2 <- round(mdatasub$unconstrainedEst2,0)
+sum(mdatasub$unconstrainedEst2)
+```
+
+Turn the output into a little matrix by using *dcast()* of 
+**maditr** package.
+
+```{r}
+mdatasubmat2 <- dcast(mdatasub, Orig_code ~ Dest_code, sum, value.var = "unconstrainedEst2", margins=c("Orig_code", "Dest_code"))
+mdatasubmat2
+```
+
+Compare with the original matrix
+
+```{r}
+mdatasubmat <- dcast(mdatasub, Orig_code ~ Dest_code, sum, value.var = "Flow", margins=c("Orig_code", "Dest_code"))
+mdatasubmat
+```
+
+Visualise the actual flow and estimated flow by scatter plot technique
+
+```{r}
+ggplot(data=mdatasub, 
+       aes(y = `Flow`, 
+           x = `unconstrainedEst2`))+
+  geom_point(color="black", fill="light blue")
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
 
 ```{r}
 
