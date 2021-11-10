@@ -1,0 +1,149 @@
+---
+title: "Hands-on Exercise 10"
+description: |
+  In this hands-on exercise, I learn how to calibrate spatial interaction models by using GLM() of Base R.
+author:
+  - name: Ngah Xin Yan
+    url: https://github.com/nxinyan/
+date: 11-02-2021
+output:
+  distill::distill_article:
+    self_contained: false
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, 
+                      eval = TRUE,
+                      message = FALSE,
+                      warning = FALSE,
+                      fig.retina = 3)
+```
+
+## Data Used
+
+The following datasets were used:
+
+- Greater Capital City Statistical Areas, Australia. (geojson format)
+- Migration data from 2011 Australia Census (csv file format)
+
+# Getting Started
+
+## Installing and Loading the R packages
+
+- **sf, sp, geojsonio, stplanr**: spatial data handling
+
+- **tidyverse**: attribute data handling
+
+- **tmap**: thematic mapping
+
+- **ggplot2**: statistical graphic
+
+- **caret**: statistical analysis
+
+```{r}
+packages = c('tmap', 'tidyverse',
+             'sp', 'caret',
+             'geojsonio', 'reshape2', 
+             'broom')
+
+for(p in packages){
+  if(!require(p, character.only = T)){
+    install.packages(p)
+  }
+  library(p, character.only = T)
+}
+```
+
+**sf** package (0.9-8) is used instead due to s2 object class issue
+
+```{r eval=FALSE}
+library(devtools)
+install_version("sf", version = "0.9-8", repos = "http://cran.us.r-project.org")
+```
+
+Installing **stplanr**
+
+```{r eval=FALSE}
+library(devtools)
+install_version("stplanr", version = "0.8.4", repos = "http://cran.us.r-project.org")
+```
+
+Installing **stplanr** 
+
+```{r}
+library(sf)
+library(stplanr)
+```
+
+# Geospatial Data
+
+Download a copy of the Greater Capital City Statistical Areas boundary layer from a dropbox depository by using *geojson_read()* of **geojsonio** package
+
+```{r}
+Aus <- geojson_read("https://www.dropbox.com/s/0fg80nzcxcsybii/GCCSA_2016_AUST_New.geojson?raw=1", what = "sp")
+```
+
+Extracting the data
+
+```{r}
+Ausdata <- Aus@data
+```
+
+Converting to 'simple features' object and setting coordinate reference system
+
+```{r}
+AusSF <- st_as_sf(Aus) %>% 
+  st_set_crs(4283) 
+```
+
+Checking if simple features are valid
+
+```{r}
+st_is_valid(AusSF)
+```
+
+Notice that there are several invalid features. Fixing it using *st_make_valid()*
+
+```{r}
+AusSF <- st_make_valid(AusSF)
+```
+
+Checking again
+
+```{r}
+st_is_valid(AusSF)
+```
+
+### Displaying the boundary layer
+
+Plotting the data to check if boundary layer is correct. Plotting usSF simple feature data.frame using *qtm()* of **tmap** package
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
