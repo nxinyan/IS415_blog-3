@@ -336,91 +336,150 @@ ggplot(data=mdatasub,
   geom_point(color="black", fill="light blue")
 ```
 
-```{r}
+### Assessing the model performance
 
+To provide a more formal assessment of the model, Goodness-o-Fit statistics will be used. The code chunk below uses *postReSample()* of **caret** package to compute three Goodness-of-Fit statistics.
+
+```{r}
+postResample(mdatasub$Flow,mdatasub$unconstrainedEst2)
+```
+
+Notice that the R-squared value of 0.32 is relatively low. It seems that the uncontrained model failed to fit the empirical data well.
+
+## Origin Constrained Spatial Interaction Model
+
+Calibrating an origin constrained SIM (the “-1” indicates no intercept in the regression model by using *glm()*.
+
+```{r}
+origSim <- glm(Flow ~ Orig_code+log(wj3_destmedinc)+log(dist)-1, na.action = na.exclude, family = poisson(link = "log"), data = mdatasub)
+#let's have a look at it's summary...
+summary(origSim)
+```
+
+Examine how the constraints hold for destinations 
+
+First, fit the model and roundup the estimated values
+
+```{r}
+mdatasub$origSimFitted <- round(fitted(origSim),0)
+```
+
+Create pivot table to turn paired list into matrix
+
+```{r}
+mdatasubmat3 <- dcast(mdatasub, Orig_code ~ Dest_code, sum, value.var = "origSimFitted", margins=c("Orig_code", "Dest_code"))
+mdatasubmat3
+```
+
+Compare with the original observed data
+
+```{r}
+mdatasubmat
+```
+
+Display the actual flow and estimated flow by using the scatter plot technique
+
+```{r}
+ggplot(data=mdatasub, 
+       aes(y = `Flow`, 
+           x = `origSimFitted`))+
+  geom_point(color="black", fill="light blue")
+```
+
+Compare the fitted values and the actual values by computing Goodness-of-fit statistics
+
+```{r}
+postResample(mdatasub$Flow,mdatasub$origSimFitted)
+```
+
+Notice that the R-squared improved considerably from 0.32 in the unconstrained model to 0.43 in this origin constrained model.
+
+## Destination Constrained Spatial Interaction Model
+
+Calibrate a destination constrained SIM (the “-1” indicates no intercept in the regression model) by using *glm()*.
+
+```{r}
+destSim <- glm(Flow ~ Dest_code+log(vi1_origpop)+log(dist)-1, na.action = na.exclude, family = poisson(link = "log"), data = mdatasub)
+summary(destSim)
+```
+
+We can examine how the constraints hold for destinations this time. Firstly, we will fitted the model and roundup the estimated values by using the code chunk below.
+
+```{r}
+mdatasub$destSimFitted <- round(fitted(destSim),0)
+```
+
+Create pivot table to turn paired list into matrix.
+
+```{r}
+mdatasubmat6 <- dcast(mdatasub, Orig_code ~ Dest_code, sum, value.var = "destSimFitted", margins=c("Orig_code", "Dest_code"))
+mdatasubmat6
+```
+
+Compare with the original observed data
+
+```{r}
+mdatasubmat
+```
+
+Display the actual flow and estimated flow by using the scatter plot technique
+
+```{r}
+ggplot(data=mdatasub, 
+       aes(y = `Flow`, 
+           x = `destSimFitted`))+
+  geom_point(color="black", fill="light blue")
+```
+
+Testing the Goodness-of-Fit
+
+```{r}
+postResample(mdatasub$Flow,mdatasub$destSimFitted)
+```
+
+The R-squared improved further from 0.32 in the unconstrained model to 0.65 in this origin constrained model.
+
+## Doubly Constrained Spatial Interaction Model
+
+Calibrate a Doubly Constrained Spatial Interaction Model by using *glm()*.
+
+```{r}
+doubSim <- glm(Flow ~ Orig_code+Dest_code+log(dist), na.action = na.exclude, family = poisson(link = "log"), data = mdatasub)
+summary(doubSim)
 ```
 
 ```{r}
-
+mdatasub$doubsimFitted <- round(fitted(doubSim),0)
 ```
+
+Create pivot table to turn paired list into matrix
 
 ```{r}
-
+mdatasubmat7 <- dcast(mdatasub, Orig_code ~ Dest_code, sum, value.var = "doubsimFitted", margins=c("Orig_code", "Dest_code"))
+mdatasubmat7
 ```
+
+Comparing with the original observed data
 
 ```{r}
-
+mdatasubmat
 ```
+
+Displaying the actual flow and estimated flow by using the scatter plot technique
 
 ```{r}
-
+ggplot(data=mdatasub, 
+       aes(y = `Flow`, 
+           x = `doubsimFitted`))+
+  geom_point(color="black", fill="light blue")
 ```
+
+The scatter plot above reveals that the fitted values are highly correlated with the actual flow values. This show the Doubly Constrained Spatial Interaction Model is the best fit model among the four spatial interaction models.
+
+To provide a quantitative assessment of the model, we can compute the Goodness-of-fit statistics exactly the same way as before.
 
 ```{r}
-
+postResample(mdatasub$Flow,mdatasub$doubsimFitted)
 ```
 
-```{r}
-
-```
-
-```{r}
-
-```
-
-```{r}
-
-```
-
-```{r}
-
-```
-
-```{r}
-
-```
-
-```{r}
-
-```
-
-```{r}
-
-```
-
-```{r}
-
-```
-
-```{r}
-
-```
-
-```{r}
-
-```
-
-```{r}
-
-```
-
-```{r}
-
-```
-
-```{r}
-
-```
-
-```{r}
-
-```
-
-```{r}
-
-```
-
-```{r}
-
-```
-
+The Goodness-of-fit statistics reveal that the Doubly Constrained Spatial Interaction Model is the best model because it produces the best R-squared statistic and smallest RMSE.
